@@ -23,7 +23,7 @@ var (
 func SetupVars() {
 	usr, _ := user.Current()
 	home := usr.HomeDir
-	loadEnv(home + "/Documents/projects/eventhive/backend/internal/config/.env")
+	loadEnv(home + "/Documents/projects/event-hive/backend/internal/config/.env")
 	DSN = os.Getenv("DSN")
 	TestDSN = os.Getenv("TEST_DSN")
 	RefreshTokenLifetime = os.Getenv("REFRESH_TOKEN_LIFETIME")
