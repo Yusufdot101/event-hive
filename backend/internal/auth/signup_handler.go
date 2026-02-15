@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/Yusufdot101/eventhive/internal/config"
 	"github.com/Yusufdot101/eventhive/internal/customerrors"
 	"github.com/Yusufdot101/eventhive/internal/token"
 	"github.com/gin-gonic/gin"
@@ -28,13 +29,13 @@ func (h *handler) signup(ctx *gin.Context) {
 		if errors.Is(err, customerrors.ErrDuplicateEmail) {
 			statusCode = http.StatusBadRequest
 		}
-		ctx.String(statusCode, fmt.Sprintf("%v\n", err.Error()))
+		ctx.JSON(statusCode, gin.H{"error": err.Error()})
 		return
 	}
 
 	refreshToken, err := h.tokenService.GenerateRefreshToken(token.RefreshToken, u.ID)
 	if err != nil {
-		ctx.String(http.StatusInternalServerError, fmt.Sprintf("%v\n", err.Error()))
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -44,7 +45,7 @@ func (h *handler) signup(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("refresh_token", refreshToken.TokenString, int(refreshToken.ExpiresAt.Unix()), "/auth/refreshtoken", "", false, true)
+	ctx.SetCookie("refresh_token", refreshToken.TokenString, int(refreshToken.ExpiresAt.Unix()), "/auth/refreshtoken", "", config.SecureCookie, true)
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"message":     "user created successfully",

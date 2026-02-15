@@ -6,6 +6,7 @@ import (
 	"log"
 	"os"
 	"os/user"
+	"strings"
 	"time"
 
 	"github.com/joho/godotenv"
@@ -18,17 +19,28 @@ var (
 	RefreshTokenLifetime string
 	JWTLifetime          string
 	JWTSecret            string
+	AllowedOrigins       []string
+	AllowedMethods       []string
+	AllowedHeaders       []string
+	SecureCookie         bool
 )
 
 func SetupVars() {
 	usr, _ := user.Current()
 	home := usr.HomeDir
 	loadEnv(home + "/Documents/projects/event-hive/backend/internal/config/.env")
+
 	DSN = os.Getenv("DSN")
 	TestDSN = os.Getenv("TEST_DSN")
 	RefreshTokenLifetime = os.Getenv("REFRESH_TOKEN_LIFETIME")
 	JWTLifetime = os.Getenv("JWT_LIFETIME")
 	JWTSecret = os.Getenv("JWT_SECRET")
+
+	AllowedOrigins = strings.Split(os.Getenv("ALLOWED_ORIGINS"), ",")
+	AllowedMethods = strings.Split(os.Getenv("ALLOWED_METHODS"), ",")
+	AllowedHeaders = strings.Split(os.Getenv("ALLOWED_HEADERS"), ",")
+
+	SecureCookie = os.Getenv("SECURE_COOKIE") != "false"
 }
 
 func loadEnv(envFileName string) {
