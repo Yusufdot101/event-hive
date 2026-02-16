@@ -1,20 +1,19 @@
 import { useAuthStore } from "../store/useAuthStore";
 import { BASE_API_URL } from "./api";
 
-export const signup = async (
+export const signin = async (
     handleError: (error: string) => void,
-    name: string,
     email: string,
     password: string,
 ): Promise<boolean> => {
     try {
-        const res = await fetch(BASE_API_URL + "/auth/signup", {
-            method: "POST",
+        const res = await fetch(BASE_API_URL + "/auth/signin", {
+            method: "PUT",
             credentials: "include",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify({ name, email, password }),
+            body: JSON.stringify({ email, password }),
         });
 
         const data = await res.json();

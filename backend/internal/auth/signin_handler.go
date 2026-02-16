@@ -17,7 +17,7 @@ var signinRequest struct {
 
 func (h *handler) signin(ctx *gin.Context) {
 	if err := ctx.ShouldBind(&signinRequest); err != nil {
-		ctx.String(http.StatusBadRequest, fmt.Sprintf("%v\n", err.Error()))
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -27,13 +27,13 @@ func (h *handler) signin(ctx *gin.Context) {
 		if errors.Is(err, customerrors.ErrInvalidCredentials) {
 			statusCode = http.StatusBadRequest
 		}
-		ctx.String(statusCode, fmt.Sprintf("%v\n", err.Error()))
+		ctx.JSON(statusCode, gin.H{"error": err.Error()})
 		return
 	}
 
 	refreshToken, err := h.tokenService.GenerateRefreshToken(token.RefreshToken, u.ID)
 	if err != nil {
-		ctx.String(http.StatusInternalServerError, fmt.Sprintf("%v\n", err.Error()))
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

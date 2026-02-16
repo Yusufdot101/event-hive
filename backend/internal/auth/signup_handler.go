@@ -19,7 +19,7 @@ var signupRequest struct {
 
 func (h *handler) signup(ctx *gin.Context) {
 	if err := ctx.ShouldBind(&signupRequest); err != nil {
-		ctx.String(http.StatusBadRequest, fmt.Sprintf("%v\n", err.Error()))
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
