@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"fmt"
 	"net/http"
 
 	"github.com/Yusufdot101/eventhive/internal/customerrors"
@@ -13,7 +12,7 @@ import (
 func (h *handler) refreshToken(ctx *gin.Context) {
 	cookie, err := ctx.Cookie("refresh_token")
 	if err != nil {
-		ctx.String(http.StatusBadRequest, fmt.Sprintf("%v", err))
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
@@ -23,13 +22,13 @@ func (h *handler) refreshToken(ctx *gin.Context) {
 			// delete the cookie
 			ctx.SetCookie("refreshToken", cookie, -1, "/auth/refreshtoken", "", false, true)
 		}
-		ctx.String(http.StatusBadRequest, fmt.Sprintf("%v", err))
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
 	accessToken, err := h.tokenService.GenerateJWT(token.AccessToken, tk.UserID)
 	if err != nil {
-		ctx.String(http.StatusInternalServerError, fmt.Sprintf("%v\n", err.Error()))
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
 		return
 	}
 

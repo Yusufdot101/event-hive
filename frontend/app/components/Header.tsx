@@ -2,6 +2,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
+import { refreshToken } from "../utilities/refreshToken";
 
 function Header() {
     const [hidden, setHidden] = useState(false);
@@ -32,14 +33,23 @@ function Header() {
         return () => window.removeEventListener("scroll", onScroll);
     }, []);
 
+    useEffect(() => {
+        if (!isLoggedIn) {
+            refreshToken();
+        }
+    }, [isLoggedIn]);
+
     return (
         <div
             className={`fixed w-full flex flex-col p-[12px] gap-y-[4px] top-0 z-10 transition-transform duration-300 ${hidden ? "-translate-y-full" : "translate-y-0"}`}
         >
             <div className="flex justify-between items-center">
-                <a href="/" className="cursor-pointer text-accent text-[20px]">
+                <Link
+                    href="/"
+                    className="cursor-pointer text-accent text-[20px]"
+                >
                     EventHive
-                </a>
+                </Link>
                 <ul className="flex gap-x-[12px] items-center">
                     {navLinks.map((link) => (
                         <li key={`${link.text}-${link.href}`}>
