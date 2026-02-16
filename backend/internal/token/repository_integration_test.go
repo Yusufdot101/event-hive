@@ -12,7 +12,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestInsertAndGet(t *testing.T) {
+func TestFullFlow(t *testing.T) {
 	// setup the DB
 	config.SetupVars()
 	DB, err := config.OpenDB(config.TestDSN)
@@ -63,4 +63,15 @@ func TestInsertAndGet(t *testing.T) {
 
 	// Postgres stores microseconds, Go time.Time has nanoseconds.
 	assert.WithinDuration(t, expected, actual, time.Microsecond)
+
+	// delete
+	err = repo.deleteByStringAndUse(gotTk.TokenString, gotTk.TokenUse)
+	if err != nil {
+		t.Fatalf("unexpected error deleting token: %v", err)
+	}
+
+	_, err = repo.getByStringAndUse(tk.TokenString, tk.TokenUse)
+	if err == nil {
+		t.Fatal("expected an error fetching token after deletion got none")
+	}
 }

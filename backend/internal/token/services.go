@@ -4,6 +4,7 @@ import (
 	"time"
 
 	"github.com/Yusufdot101/eventhive/internal/config"
+	"github.com/Yusufdot101/eventhive/internal/customerrors"
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
 )
@@ -54,4 +55,13 @@ func (ts *TokenService) GenerateJWT(tokenUse tokenUse, userID string) (*token, e
 
 func (ts *TokenService) GetTokenByStringAndUse(tokenString string, tokenUse tokenUse) (*token, error) {
 	return ts.repo.getByStringAndUse(tokenString, tokenUse)
+}
+
+func (ts *TokenService) DeleteTokenByStringAndUse(tokenString string, tokenUse tokenUse) error {
+	err := uuid.Validate(tokenString)
+	if err != nil {
+		return customerrors.ErrInvalidRefreshToken
+	}
+
+	return ts.repo.deleteByStringAndUse(tokenString, tokenUse)
 }

@@ -17,5 +17,6 @@ func RegisterRoutes(DB *sql.DB, ctx *gin.RouterGroup) {
 
 	ctx.Match([]string{http.MethodPost, http.MethodOptions}, "/signup", h.signup)
 	ctx.Match([]string{http.MethodPut, http.MethodOptions}, "/signin", h.signin)
+	ctx.Match([]string{http.MethodPut, http.MethodOptions}, "/logout", h.logout)
 	ctx.Match([]string{http.MethodPut, http.MethodOptions}, "/refreshtoken", h.refreshToken)
 }

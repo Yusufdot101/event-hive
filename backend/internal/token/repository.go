@@ -78,3 +78,32 @@ func (r *repository) getByStringAndUse(tokenString string, tokenUse tokenUse) (*
 
 	return tk, nil
 }
+
+func (r *repository) deleteByStringAndUse(tokenString string, tokenUse tokenUse) error {
+	query := `
+		DELETE FROM tokens
+		WHERE 
+			token_string = $1
+			AND token_use = $2
+			AND expires_at > NOW()
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := r.DB.ExecContext(ctx, query, tokenString, tokenUse)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return customerrors.ErrInvalidRefreshToken
+	}
+
+	return nil
+}
