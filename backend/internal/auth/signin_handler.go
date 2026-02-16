@@ -43,7 +43,7 @@ func (h *handler) signin(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("refresh_token", refreshToken.TokenString, int(refreshToken.ExpiresAt.Unix()), "/auth/refreshtoken", "", false, true)
+	ctx.SetCookie("refresh_token", refreshToken.TokenString, int(refreshToken.ExpiresAt.Unix()), "/auth", "", false, true)
 
 	ctx.JSON(http.StatusOK, gin.H{
 		"message":     "user logged in successfully",

@@ -3,22 +3,25 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useAuthStore } from "../store/useAuthStore";
 import { refreshToken } from "../utilities/refreshToken";
+import { useRouter } from "next/navigation";
+import { logout } from "../utilities/logout";
 
 function Header() {
     const [hidden, setHidden] = useState(false);
 
     const isLoggedIn = useAuthStore((state) => state.isLoggedIn);
 
+    const router = useRouter();
     const navLinks = [
         {
             text: "Signup",
-            href: "/signup",
             hidden: isLoggedIn,
+            onClick: () => router.push("/signup"),
         },
         {
             text: "Logout",
-            href: "/logout",
             hidden: !isLoggedIn,
+            onClick: () => logout(),
         },
     ];
 
@@ -52,14 +55,13 @@ function Header() {
                 </Link>
                 <ul className="flex gap-x-[12px] items-center">
                     {navLinks.map((link) => (
-                        <li key={`${link.text}-${link.href}`}>
-                            <Link
-                                href={link.href}
-                                className="cursor-pointer hover:text-[110%] duration-300"
-                                hidden={link.hidden}
-                            >
-                                {link.text}
-                            </Link>
+                        <li
+                            key={`${link.text}-${link.onClick}`}
+                            hidden={link.hidden}
+                            className="cursor-pointer hover:text-[110%] duration-300"
+                            onClick={link.onClick}
+                        >
+                            {link.text}
                         </li>
                     ))}
                 </ul>

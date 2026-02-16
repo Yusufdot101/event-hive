@@ -8,8 +8,10 @@ export const refreshToken = async () => {
             credentials: "include",
         });
 
+        if (res.status === 400) return;
+
         const data = await res.json();
-        if (data.error && res.status !== 400) {
+        if (data.error) {
             alert("An alert occured. Please try again later");
             return;
         }

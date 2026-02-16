@@ -20,7 +20,7 @@ func (h *handler) refreshToken(ctx *gin.Context) {
 	if err != nil {
 		if errors.Is(err, customerrors.ErrInvalidRefreshToken) {
 			// delete the cookie
-			ctx.SetCookie("refreshToken", cookie, -1, "/auth/refreshtoken", "", false, true)
+			ctx.SetCookie("refresh_token", cookie, -1, "/auth", "", false, true)
 		}
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

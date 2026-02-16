@@ -45,7 +45,7 @@ func (h *handler) signup(ctx *gin.Context) {
 		return
 	}
 
-	ctx.SetCookie("refresh_token", refreshToken.TokenString, int(refreshToken.ExpiresAt.Unix()), "/auth/refreshtoken", "", config.SecureCookie, true)
+	ctx.SetCookie("refresh_token", refreshToken.TokenString, int(refreshToken.ExpiresAt.Unix()), "/auth", "", config.SecureCookie, true)
 
 	ctx.JSON(http.StatusCreated, gin.H{
 		"message":     "user created successfully",
