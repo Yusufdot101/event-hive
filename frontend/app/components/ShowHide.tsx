@@ -5,7 +5,7 @@ type Props = {
 
 function ShowHide({ handleClick, show }: Props) {
     return (
-        <div className="h-[28px] w-10 max-[900]:h-[24px] absolute top-0 right-0 translate-y-[10px]">
+        <div className="h-[28px] w-10 max-[900]:h-[24px] absolute right-0 top-0 translate-y-[10px]">
             {show ? (
                 <svg
                     width="64px"

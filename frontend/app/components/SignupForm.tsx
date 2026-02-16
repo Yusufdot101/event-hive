@@ -3,7 +3,6 @@ import Link from "next/link";
 import { useState } from "react";
 import { signup } from "../utilities/signup";
 import ShowHide from "./ShowHide";
-import { useRouter } from "next/navigation";
 
 const SignupForm = () => {
     const [username, setUsername] = useState("");
@@ -16,7 +15,6 @@ const SignupForm = () => {
 
     const [error, setError] = useState("");
 
-    const router = useRouter();
     const handleSubmit = async () => {
         if (password !== confirmPassword) {
             return;
@@ -38,7 +36,6 @@ const SignupForm = () => {
         );
 
         if (!success) return;
-        // router.replace("/");
     };
 
     return (
@@ -84,32 +81,48 @@ const SignupForm = () => {
             </div>
 
             <div className="flex flex-col w-full">
-                <div className="flex justify-between items-center">
-                    <label htmlFor="password">Password</label>
+                <label htmlFor="password">Password</label>
+                <div className="relative">
+                    <input
+                        id="password"
+                        name="password"
+                        type={showPassword ? "text" : "password"}
+                        value={password}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setPassword(e.target.value)
+                        }
+                        required
+                        minLength={8}
+                        maxLength={72}
+                        className="border-muted-foreground border-1 rounded-[4px] p-[8px] outline-none w-full pr-[40px]"
+                        placeholder="Create a strong password"
+                    />
                     <ShowHide
                         show={showPassword}
                         handleClick={() => setShowPassword((prev) => !prev)}
                     />
                 </div>
-                <input
-                    id="password"
-                    name="password"
-                    type={showPassword ? "text" : "password"}
-                    value={password}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setPassword(e.target.value)
-                    }
-                    required
-                    minLength={8}
-                    maxLength={72}
-                    className="border-muted-foreground border-1 rounded-[4px] p-[8px] outline-none"
-                    placeholder="Create a strong password"
-                />
             </div>
 
             <div className="flex flex-col w-full">
-                <div className="flex justify-between">
-                    <label htmlFor="confirmPassword">Confirm Password</label>
+                <label htmlFor="confirmPassword">Confirm Password</label>
+                <div className="relative">
+                    <input
+                        id="confirmPassword"
+                        name="confirmPassword"
+                        type={showConfirmPassword ? "text" : "password"}
+                        value={confirmPassword}
+                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            setConfirmPassword(e.target.value)
+                        }
+                        required
+                        minLength={8}
+                        maxLength={72}
+                        pattern={password}
+                        title="passwords must match"
+                        className="border-muted-foreground border-1 rounded-[4px] p-[8px] outline-none w-full pr-[40px]"
+                        placeholder="Re-enter your password"
+                    />
                     <ShowHide
                         show={showConfirmPassword}
                         handleClick={() =>
@@ -117,27 +130,11 @@ const SignupForm = () => {
                         }
                     />
                 </div>
-                <input
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    type={showConfirmPassword ? "text" : "password"}
-                    value={confirmPassword}
-                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                        setConfirmPassword(e.target.value)
-                    }
-                    required
-                    minLength={8}
-                    maxLength={72}
-                    pattern={password}
-                    title="passwords must match"
-                    className="border-muted-foreground border-1 rounded-[4px] p-[8px] outline-none"
-                    placeholder="Re-enter your password"
-                />
             </div>
 
             {error && (
                 <div className="bg-red-500 text-white py-[4px] text-center rounded-[4px]">
-                    Duplicate email
+                    {error}
                 </div>
             )}
 
