@@ -65,3 +65,33 @@ func TestGenerateJWT(t *testing.T) {
 	assert.Equal(t, tk.UserID, userID)
 	assert.Equal(t, tk.TokenUse, AccessToken)
 }
+
+func TestValidateJWT(t *testing.T) {
+	config.SetupVars()
+	DB, err := config.OpenDB(config.TestDSN)
+	if err != nil {
+		t.Fatalf("unexpected error opening DB: %v", err)
+	}
+
+	err = setup.ClearDB(DB)
+	if err != nil {
+		t.Fatalf("unexpected error clearing DB: %v", err)
+	}
+
+	repo := NewRepository(DB)
+	svc := NewTokenService(repo)
+
+	tk, err := svc.GenerateJWT(AccessToken, "1")
+	log.Println("here: ", tk.TokenString)
+	if err != nil {
+		t.Fatalf("unexpected generating JWT: %v", err)
+	}
+
+	_, err = svc.ValidateJWT(tk.TokenString)
+	if err != nil {
+		t.Fatalf("unexpected error: %v", err)
+	}
+	// assert.NoError(t, err)
+
+	// tokenString :=
+}
