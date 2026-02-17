@@ -87,7 +87,7 @@ func TestValidateJWT(t *testing.T) {
 		t.Fatalf("unexpected generating JWT: %v", err)
 	}
 
-	_, err = svc.ValidateJWT(tk.TokenString)
+	_, err = ValidateJWT(tk.TokenString)
 	if err != nil {
 		t.Fatalf("unexpected error: %v", err)
 	}

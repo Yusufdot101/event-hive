@@ -66,7 +66,7 @@ func (ts *TokenService) DeleteTokenByStringAndUse(tokenString string, tokenUse t
 	return ts.repo.deleteByStringAndUse(tokenString, tokenUse)
 }
 
-func (ts *TokenService) ValidateJWT(tokenString string) (*jwt.Token, error) {
+func ValidateJWT(tokenString string) (*jwt.Token, error) {
 	token, err := jwt.Parse(tokenString, func(t *jwt.Token) (any, error) {
 		if _, ok := t.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, customerrors.ErrInvalidAccessToken
