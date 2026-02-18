@@ -30,7 +30,7 @@ func TestSigninHandler(t *testing.T) {
 	}
 
 	repo := user.NewRepository(DB)
-	h := newHandler(user.NewUserService(repo), token.NewTokenService(token.NewRepository(DB)))
+	h := NewHandler(user.NewUserService(repo), token.NewTokenService(token.NewRepository(DB)))
 
 	// register user first
 	name := "yusuf"

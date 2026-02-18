@@ -8,4 +8,9 @@ var (
 	ErrInvalidCredentials  = errors.New("invalid credentials")
 	ErrInvalidRefreshToken = errors.New("invalid or expired refresh token")
 	ErrInvalidAccessToken  = errors.New("invalid or expired access token")
+
+	// ErrInvalidDates Doesn't include the createdAt because thats set by the server
+	ErrInvalidDates    = errors.New("invalid event dates, either start time or end time")
+	ErrInvalidInfo     = errors.New("invalid event info, either title or description")
+	ErrInvalidLocation = errors.New("invalid event location, either longitude or latitude")
 )

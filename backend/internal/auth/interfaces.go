@@ -10,7 +10,7 @@ type handler struct {
 	tokenService *token.TokenService
 }
 
-func newHandler(userService *user.UserService, tokenService *token.TokenService) *handler {
+func NewHandler(userService *user.UserService, tokenService *token.TokenService) *handler {
 	return &handler{
 		userService:  userService,
 		tokenService: tokenService,

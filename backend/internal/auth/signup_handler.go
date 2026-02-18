@@ -17,7 +17,7 @@ var signupRequest struct {
 	Password string `json:"password"`
 }
 
-func (h *handler) signup(ctx *gin.Context) {
+func (h *handler) Signup(ctx *gin.Context) {
 	if err := ctx.ShouldBind(&signupRequest); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -47,6 +47,7 @@ func (h *handler) signup(ctx *gin.Context) {
 
 	ctx.SetCookie("refresh_token", refreshToken.TokenString, int(refreshToken.ExpiresAt.Unix()), "/auth", "", config.SecureCookie, true)
 
+	ctx.Header("Content-Type", "application/json")
 	ctx.JSON(http.StatusCreated, gin.H{
 		"message":     "user created successfully",
 		"accessToken": accessToken.TokenString,

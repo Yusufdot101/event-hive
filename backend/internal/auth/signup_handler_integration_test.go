@@ -30,7 +30,7 @@ func TestSignupHandler(t *testing.T) {
 	}
 
 	repo := user.NewRepository(DB)
-	h := newHandler(user.NewUserService(repo), token.NewTokenService(token.NewRepository(DB)))
+	h := NewHandler(user.NewUserService(repo), token.NewTokenService(token.NewRepository(DB)))
 
 	body := `{
 		"name": "yusuf",
@@ -46,7 +46,7 @@ func TestSignupHandler(t *testing.T) {
 	c, _ := gin.CreateTestContext(w)
 	c.Request = req
 
-	h.signup(c)
+	h.Signup(c)
 
 	assert.Equal(t, http.StatusCreated, w.Code)
 	assert.Contains(t, w.Body.String(), "user created successfully")

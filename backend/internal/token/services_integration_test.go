@@ -82,7 +82,6 @@ func TestValidateJWT(t *testing.T) {
 	svc := NewTokenService(repo)
 
 	tk, err := svc.GenerateJWT(AccessToken, "1")
-	log.Println("here: ", tk.TokenString)
 	if err != nil {
 		t.Fatalf("unexpected generating JWT: %v", err)
 	}

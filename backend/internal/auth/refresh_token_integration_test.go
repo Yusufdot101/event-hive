@@ -29,7 +29,7 @@ func TestRefreshTokenHandler(t *testing.T) {
 		t.Fatalf("unexpected error clearing DB: %v", err)
 	}
 
-	h := newHandler(user.NewUserService(
+	h := NewHandler(user.NewUserService(
 		user.NewRepository(DB)),
 		token.NewTokenService(token.NewRepository(DB)),
 	)
@@ -53,9 +53,11 @@ func TestRefreshTokenHandler(t *testing.T) {
 	ctx, _ := gin.CreateTestContext(w)
 	ctx.Request = req
 
-	h.signup(ctx)
+	h.Signup(ctx)
 
-	assert.Equal(t, http.StatusCreated, w.Code)
+	if w.Code != http.StatusCreated {
+		t.Fatalf("expected status = %v, got status = %v", http.StatusCreated, w.Code)
+	}
 	// requst refresh token
 	// get the refresh token from the cookie
 	cookie := w.Header().Get("Set-cookie")

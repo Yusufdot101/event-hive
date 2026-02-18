@@ -7,6 +7,7 @@ import (
 
 	"github.com/Yusufdot101/eventhive/internal/auth"
 	"github.com/Yusufdot101/eventhive/internal/config"
+	"github.com/Yusufdot101/eventhive/internal/event"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
@@ -35,9 +36,11 @@ func main() {
 	if err != nil {
 		log.Fatalf("error opening DB: %v", err)
 	}
-	group := r.Group("/auth")
+	authGroup := r.Group("/auth")
+	auth.RegisterRoutes(DB, authGroup)
 
-	auth.RegisterRoutes(DB, group)
+	eventGroup := r.Group("/event")
+	event.RegisterRoutes(DB, eventGroup)
 
 	err = r.Run(":8080")
 	if err != nil {
