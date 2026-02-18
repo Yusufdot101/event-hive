@@ -32,8 +32,16 @@ function Header() {
             setHidden(y > lastY && y > 80);
         };
 
+        const onClick = () => {
+            setHidden((prev) => !prev);
+        };
+
         window.addEventListener("scroll", onScroll);
-        return () => window.removeEventListener("scroll", onScroll);
+        window.addEventListener("click", onClick);
+        return () => {
+            window.removeEventListener("scroll", onScroll);
+            window.removeEventListener("click", onClick);
+        };
     }, []);
 
     useEffect(() => {
