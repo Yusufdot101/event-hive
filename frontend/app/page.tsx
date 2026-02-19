@@ -1,18 +1,24 @@
 "use client";
-import { Map, MapRef } from "@vis.gl/react-maplibre";
-import { useCallback, useEffect, useLayoutEffect, useState } from "react";
+import { LngLatLike, Map, MapRef } from "@vis.gl/react-maplibre";
+import { useCallback, useEffect, useState } from "react";
 import { defaultLocation, getLocation } from "./utilities/api";
+import RightClickOptions from "./components/RightClickOptions";
 
 function App() {
+    const [viewState, setViewState] = useState({
+        longitude: defaultLocation.lng,
+        latitude: defaultLocation.lat,
+        zoom: 2,
+    });
     const [node, setNode] = useState<MapRef | null>(null);
     const callbackRef = useCallback((el: MapRef) => setNode(el), []);
 
-    useLayoutEffect(() => {
+    useEffect(() => {
         if (!node) return;
         (async () => {
             const location = await getLocation();
             if (location !== defaultLocation) {
-                node.flyTo({ center: location, zoom: 18 });
+                node.flyTo({ center: location, zoom: 17 });
             }
         })();
     }, [node]);
@@ -34,25 +40,43 @@ function App() {
         return () => mq.removeEventListener("change", update);
     }, []);
 
+    const [rightClickOptionsLocation, setRightClickOptionsLocation] =
+        useState(defaultLocation);
+    const [showRightClickOptions, setShowRightClickOptions] = useState(false);
+
     return (
-        <Map
-            id="map"
-            onClick={(e) => {
-                console.log("here: ", e.lngLat);
-            }}
-            ref={callbackRef}
-            initialViewState={{
-                longitude: defaultLocation.lng,
-                latitude: defaultLocation.lat,
-                zoom: 2,
-            }}
-            mapStyle={
-                isDark
-                    ? "styles/dark.json"
-                    : "https://tiles.openfreemap.org/styles/liberty"
-            }
-            style={{ height: "100svh", width: "100%", marginTop: "-64px" }}
-        ></Map>
+        <>
+            <Map
+                ref={callbackRef}
+                initialViewState={viewState}
+                onMove={(e) => {
+                    setViewState(e.viewState);
+                }}
+                mapStyle={
+                    isDark
+                        ? "styles/dark.json"
+                        : "https://tiles.openfreemap.org/styles/liberty"
+                }
+                style={{
+                    minHeight: "100svh",
+                    width: "100%",
+                    marginTop: "-64px",
+                }}
+                onClick={() => {
+                    setShowRightClickOptions(false);
+                }}
+                onContextMenu={(e) => {
+                    setShowRightClickOptions(true);
+                    setRightClickOptionsLocation(e.lngLat);
+                }}
+            >
+                <RightClickOptions
+                    isShown={showRightClickOptions}
+                    lng={rightClickOptionsLocation.lng}
+                    lat={rightClickOptionsLocation.lat}
+                />
+            </Map>
+        </>
     );
 }
 
