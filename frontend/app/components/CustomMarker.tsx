@@ -1,14 +1,16 @@
 "use client";
 
 import { useMap } from "@vis.gl/react-maplibre";
+import { CSSProperties } from "react";
 
 type Props = {
     lng: number;
     lat: number;
     children: React.ReactNode;
+    style?: CSSProperties;
 };
 
-const CustomMarker = ({ lng, lat, children }: Props) => {
+const CustomMarker = ({ lng, lat, children, style }: Props) => {
     const { current: map } = useMap();
     if (!map) return;
     const { x, y } = map?.project([lng, lat]);
@@ -19,8 +21,8 @@ const CustomMarker = ({ lng, lat, children }: Props) => {
                 position: "absolute",
                 left: `${x}px`,
                 top: `${y}px`,
+                ...style,
             }}
-            className="w-full"
         >
             {children}
         </div>

@@ -26,6 +26,7 @@ func (h *handler) create(ctx *gin.Context) {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
+
 	err := h.service.newEvent(
 		userID, createRequest.StartsAt, createRequest.EndsAt, createRequest.Title,
 		createRequest.Description, createRequest.Latitude, createRequest.Longitude,

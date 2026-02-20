@@ -39,7 +39,7 @@ func main() {
 	authGroup := r.Group("/auth")
 	auth.RegisterRoutes(DB, authGroup)
 
-	eventGroup := r.Group("/event")
+	eventGroup := r.Group("/")
 	event.RegisterRoutes(DB, eventGroup)
 
 	err = r.Run(":8080")
