@@ -8,5 +8,6 @@ CREATE TABLE IF NOT EXISTS events(
     title TEXT NOT NULL,
     description TEXT NOT NULL,
     latitude  DOUBLE PRECISION NOT NULL CHECK ( latitude BETWEEN -90 AND 90 ),
-    longitude DOUBLE PRECISION NOT NULL CHECK ( longitude BETWEEN -180 AND 180 )
+    longitude DOUBLE PRECISION NOT NULL CHECK ( longitude BETWEEN -180 AND 180 ),
+    address TEXT NOT NULL
 );

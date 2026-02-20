@@ -17,6 +17,7 @@ type event struct {
 	description   string  `validate:"required"`
 	latitude      float64 `validate:"required,gte=-90,lte=90"`
 	longitude     float64 `validate:"required,gte=-180,lte=180"`
+	address       string  `validate:"required"`
 }
 
 type service struct {
@@ -69,7 +70,7 @@ func validateDates(e *event) error {
 }
 
 func validateInfo(e *event) error {
-	if len(e.title) < 2 || len(e.description) < 2 {
+	if len(e.title) < 2 || len(e.description) < 2 || len(e.address) < 2 {
 		return customerrors.ErrInvalidInfo
 	}
 	return nil

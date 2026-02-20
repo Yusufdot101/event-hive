@@ -11,6 +11,6 @@ var (
 
 	// ErrInvalidDates Doesn't include the createdAt because thats set by the server
 	ErrInvalidDates    = errors.New("invalid event dates, either start time or end time")
-	ErrInvalidInfo     = errors.New("invalid event info, either title or description")
+	ErrInvalidInfo     = errors.New("invalid event info, either title, description or address")
 	ErrInvalidLocation = errors.New("invalid event location, either longitude or latitude")
 )

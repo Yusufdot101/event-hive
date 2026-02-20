@@ -17,6 +17,7 @@ var createRequest struct {
 	Description string    `json:"description"`
 	Latitude    float64   `json:"latitude"`
 	Longitude   float64   `json:"longitude"`
+	Address     string    `json:"address"`
 }
 
 func (h *handler) create(ctx *gin.Context) {
@@ -28,6 +29,7 @@ func (h *handler) create(ctx *gin.Context) {
 	err := h.service.newEvent(
 		userID, createRequest.StartsAt, createRequest.EndsAt, createRequest.Title,
 		createRequest.Description, createRequest.Latitude, createRequest.Longitude,
+		createRequest.Address,
 	)
 	log.Println("here ", err)
 	if err != nil {
