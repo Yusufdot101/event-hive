@@ -7,17 +7,17 @@ import (
 )
 
 type event struct {
-	id            string
-	createdAt     time.Time `validate:"required"`
-	startsAt      time.Time `validate:"required"`
-	endsAt        time.Time `validate:"required"`
-	lastUpdatedAt *time.Time
-	creatorID     string  `validate:"required"`
-	title         string  `validate:"required"`
-	description   string  `validate:"required"`
-	latitude      float64 `validate:"required,gte=-90,lte=90"`
-	longitude     float64 `validate:"required,gte=-180,lte=180"`
-	address       string  `validate:"required"`
+	ID            string
+	CreatedAt     time.Time `validate:"required"`
+	StartsAt      time.Time `validate:"required"`
+	EndsAt        time.Time `validate:"required"`
+	LastUpdatedAt *time.Time
+	CreatorID     string  `validate:"required"`
+	Title         string  `validate:"required"`
+	Description   string  `validate:"required"`
+	Latitude      float64 `validate:"required,gte=-90,lte=90"`
+	Longitude     float64 `validate:"required,gte=-180,lte=180"`
+	Address       string  `validate:"required"`
 }
 
 type service struct {
@@ -63,21 +63,21 @@ func validateEvent(e *event) error {
 
 func validateDates(e *event) error {
 	earliestDate := time.Date(2026, 2, 1, 0, 0, 0, 0, time.UTC)
-	if e.startsAt.Before(earliestDate) || e.endsAt.Before(e.startsAt) {
+	if e.StartsAt.Before(earliestDate) || e.EndsAt.Before(e.StartsAt) {
 		return customerrors.ErrInvalidDates
 	}
 	return nil
 }
 
 func validateInfo(e *event) error {
-	if len(e.title) < 2 || len(e.description) < 2 || len(e.address) < 2 {
+	if len(e.Title) < 2 || len(e.Description) < 2 || len(e.Address) < 2 {
 		return customerrors.ErrInvalidInfo
 	}
 	return nil
 }
 
 func validateLocation(e *event) error {
-	if (e.longitude > 180 || e.longitude < -180) || (e.latitude > 90 || e.latitude < -90) {
+	if (e.Longitude > 180 || e.Longitude < -180) || (e.Latitude > 90 || e.Latitude < -90) {
 		return customerrors.ErrInvalidLocation
 	}
 	return nil

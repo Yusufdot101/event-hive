@@ -26,22 +26,70 @@ func (r *repository) insert(e *event) error {
 	`
 
 	values := []any{
-		e.startsAt,
-		e.endsAt,
-		e.creatorID,
-		e.title,
-		e.description,
-		e.latitude,
-		e.longitude,
-		e.address,
+		e.StartsAt,
+		e.EndsAt,
+		e.CreatorID,
+		e.Title,
+		e.Description,
+		e.Latitude,
+		e.Longitude,
+		e.Address,
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
 	return r.DB.QueryRowContext(ctx, query, values...).Scan(
-		&e.id,
-		&e.createdAt,
-		&e.lastUpdatedAt,
+		&e.ID,
+		&e.CreatedAt,
+		&e.LastUpdatedAt,
 	)
+}
+
+func (r *repository) getMany() ([]*event, error) {
+	query := `
+		SELECT 
+			id, created_at, starts_at, ends_at, last_updated_at, 
+			creator_id, title, description, latitude, longitude, address
+		FROM events
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	events := []*event{}
+	rows, err := r.DB.QueryContext(ctx, query)
+	if err != nil {
+		return nil, err
+	}
+
+	defer rows.Close()
+
+	for rows.Next() {
+		event := &event{}
+		err = rows.Scan(
+			&event.ID,
+			&event.CreatedAt,
+			&event.StartsAt,
+			&event.EndsAt,
+			&event.LastUpdatedAt,
+			&event.CreatorID,
+			&event.Title,
+			&event.Description,
+			&event.Latitude,
+			&event.Longitude,
+			&event.Address,
+		)
+		if err != nil {
+			return nil, err
+		}
+
+		events = append(events, event)
+	}
+
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return events, nil
 }

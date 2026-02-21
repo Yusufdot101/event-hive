@@ -16,7 +16,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestCreateEventHandler(t *testing.T) {
+func TestGetEventsHandler(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
 	config.SetupVars()
@@ -34,6 +34,7 @@ func TestCreateEventHandler(t *testing.T) {
 	tokenSvc := token.NewTokenService(token.NewRepository(DB))
 	authHandler := auth.NewHandler(userSvc, tokenSvc)
 
+	// create user
 	body := `{
 		"name": "yusuf",
 		"email": "example@gmail.com",
@@ -65,6 +66,7 @@ func TestCreateEventHandler(t *testing.T) {
 		t.Fatal("expected accessToken to be in response")
 	}
 
+	// create event
 	router := gin.New()
 	group := router.Group("/")
 	RegisterRoutes(DB, group)
@@ -84,5 +86,16 @@ func TestCreateEventHandler(t *testing.T) {
 
 	router.ServeHTTP(w, req)
 
-	assert.Equal(t, http.StatusCreated, w.Code)
+	// get the events
+	h := newHandler(newService(newRepository(DB)))
+	req = httptest.NewRequest(http.MethodGet, "/events", nil)
+	w = httptest.NewRecorder()
+
+	ctx, _ := gin.CreateTestContext(w)
+	ctx.Request = req
+
+	h.getEvents(ctx)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Contains(t, w.Body.String(), "events")
 }

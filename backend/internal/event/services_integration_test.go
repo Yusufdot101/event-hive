@@ -33,7 +33,7 @@ func TestNewEvent(t *testing.T) {
 		t.Fatalf("unexpected error registering user: %v", err)
 	}
 
-	err = svc.newEvent(u.ID, time.Now(), time.Now().Add(3*24*time.Hour), "test event", "test event description", 0, 0)
+	err = svc.newEvent(u.ID, time.Now(), time.Now().Add(3*24*time.Hour), "test event", "test event description", 0, 0, "Test Address")
 	if err != nil {
 		t.Fatalf("unexpected error creating event: %v", err)
 	}
@@ -63,6 +63,6 @@ func TestNewEventInvalid(t *testing.T) {
 
 	startDate := time.Now()
 	endDate := startDate.Add(-24 * time.Hour) // end date a day before start date
-	err = svc.newEvent(u.ID, startDate, endDate, "test event", "test event description", 0, 0)
+	err = svc.newEvent(u.ID, startDate, endDate, "test event", "test event description", 0, 0, "Test Address")
 	assert.Equal(t, err.Error(), customerrors.ErrInvalidDates.Error())
 }

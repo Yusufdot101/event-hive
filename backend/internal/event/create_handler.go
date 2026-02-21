@@ -22,6 +22,7 @@ var createRequest struct {
 
 func (h *handler) create(ctx *gin.Context) {
 	userID := ctx.GetHeader(string(middleware.CtxUserKey))
+	log.Println("here: ", userID)
 	if err := ctx.ShouldBind(&createRequest); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
@@ -32,7 +33,6 @@ func (h *handler) create(ctx *gin.Context) {
 		createRequest.Description, createRequest.Latitude, createRequest.Longitude,
 		createRequest.Address,
 	)
-	log.Println("here ", err)
 	if err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return

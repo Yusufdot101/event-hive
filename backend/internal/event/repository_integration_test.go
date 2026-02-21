@@ -31,16 +31,17 @@ func TestInsert(t *testing.T) {
 	}
 
 	e := &event{
-		creatorID:   u.ID,
-		startsAt:    time.Now(),
-		endsAt:      time.Now().Add(3 * 24 * time.Hour),
-		title:       "test event",
-		description: "this is a test event. please signup for it anyways",
-		latitude:    0,
-		longitude:   0,
+		CreatorID:   u.ID,
+		StartsAt:    time.Now(),
+		EndsAt:      time.Now().Add(3 * 24 * time.Hour),
+		Title:       "test event",
+		Description: "this is a test event. please signup for it anyways",
+		Latitude:    0,
+		Longitude:   0,
+		Address:     "Test Addres",
 	}
 
 	repo := newRepository(DB)
 	assert.NoError(t, repo.insert(e))
-	assert.NoError(t, uuid.Validate(e.id))
+	assert.NoError(t, uuid.Validate(e.ID))
 }

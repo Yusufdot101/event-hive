@@ -14,4 +14,5 @@ func RegisterRoutes(DB *sql.DB, ctx *gin.RouterGroup) {
 	h := newHandler(svc)
 
 	ctx.Match([]string{http.MethodPost, http.MethodOptions}, "/events", middleware.Authenticate(h.create))
+	ctx.Match([]string{http.MethodGet}, "/events", h.getEvents)
 }
