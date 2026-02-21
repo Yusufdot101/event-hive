@@ -1,4 +1,18 @@
-import { BASE_API_URL, fetchWithRefreshTokenRetry, location } from "./api";
+import { fetchWithRefreshTokenRetry, location } from "./api";
+
+export type event = {
+    ID: string;
+    CreatedAt: string;
+    StartsAt: string;
+    EndsAt: string;
+    LastUpdatedAt: string;
+    CreatorID: string;
+    Title: string;
+    Description: string;
+    Latitude: number;
+    Longitude: number;
+    Address: string;
+};
 
 export const createEvent = async (
     title: string,
@@ -21,7 +35,7 @@ export const createEvent = async (
     endDate = date.toISOString();
 
     try {
-        const res = await fetchWithRefreshTokenRetry(`${BASE_API_URL}/events`, {
+        const res = await fetchWithRefreshTokenRetry("events", {
             method: "POST",
             credentials: "include",
             body: JSON.stringify({
@@ -42,6 +56,10 @@ export const createEvent = async (
         const data = await res?.json();
         const error = data.error;
         if (error) {
+            if (error === "invalid or expired access token") {
+                alert("please login to access this feature");
+                return false;
+            }
             alert(error);
             return false;
         }
@@ -49,5 +67,20 @@ export const createEvent = async (
     } catch (error) {
         console.log(error);
         return false;
+    }
+};
+
+export const getEvents = async (): Promise<event[] | undefined> => {
+    try {
+        const res = await fetchWithRefreshTokenRetry("events", {
+            method: "GET",
+        });
+        if (!res) return undefined;
+        const data = await res.json();
+        const events = data.events;
+        return events;
+    } catch (error) {
+        console.log(error);
+        return undefined;
     }
 };

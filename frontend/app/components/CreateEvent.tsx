@@ -33,7 +33,6 @@ const CreateEvent = ({
         return date.toTimeString().slice(0, 5);
     };
 
-    const router = useRouter();
     const handleSubmit = async () => {
         if (
             !title ||
@@ -60,7 +59,7 @@ const CreateEvent = ({
         );
 
         if (!success) return;
-        router.push("/");
+        window.location.reload();
         handleClose();
     };
 
@@ -74,7 +73,7 @@ const CreateEvent = ({
             onSubmit={(e) => {
                 e.preventDefault();
             }}
-            className="bg-background/80 flex flex-col gap-y-[8px] justify-center border-1 border-muted-foreground p-[20px] rounded-[8px] w-full max-w-[600px] min-[901]:text-[20px] absolute top-1/2 left-1/2 -translate-1/2 h-[full]"
+            className="bg-background/80 flex flex-col gap-y-[8px] justify-center border-1 border-muted-foreground p-[20px] rounded-[8px] w-full max-w-[600px] min-[901]:text-[20px] absolute top-1/2 left-1/2 -translate-1/2 h-[full] z-10"
         >
             <div className="flex flex-col w-full">
                 <label htmlFor="password">Event location</label>
