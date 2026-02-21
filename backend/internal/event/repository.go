@@ -3,7 +3,11 @@ package event
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
+
+	"github.com/Yusufdot101/eventhive/internal/customerrors"
+	"github.com/lib/pq"
 )
 
 type repository struct {
@@ -92,4 +96,44 @@ func (r *repository) getMany() ([]*event, error) {
 	}
 
 	return events, nil
+}
+
+func (r *repository) getByID(ID string) (*event, error) {
+	query := `
+		SELECT 
+			id, created_at, starts_at, ends_at, last_updated_at, 
+			creator_id, title, description, latitude, longitude, address
+		FROM events
+		WHERE id = $1
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	e := &event{}
+	err := r.DB.QueryRowContext(ctx, query, ID).Scan(
+		&e.ID,
+		&e.CreatedAt,
+		&e.StartsAt,
+		&e.EndsAt,
+		&e.LastUpdatedAt,
+		&e.CreatorID,
+		&e.Title,
+		&e.Description,
+		&e.Latitude,
+		&e.Longitude,
+		&e.Address,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, customerrors.ErrNoRecord
+		}
+		var pqErr *pq.Error
+		if errors.As(err, &pqErr) {
+			return nil, customerrors.ErrInvalidID
+		}
+		return nil, err
+	}
+
+	return e, nil
 }

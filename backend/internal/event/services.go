@@ -26,3 +26,7 @@ func (svc *service) newEvent(CreatorID string, startsAt, endsAt time.Time, title
 func (svc *service) getMany() ([]*event, error) {
 	return svc.repo.getMany()
 }
+
+func (svc *service) getByID(ID string) (*event, error) {
+	return svc.repo.getByID(ID)
+}
