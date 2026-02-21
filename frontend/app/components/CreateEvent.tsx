@@ -66,14 +66,13 @@ const CreateEvent = ({
 
     return (
         <form
-            onSubmit={(e) => {
-                e.preventDefault();
-                handleSubmit();
-            }}
             onKeyDown={(e) => {
                 if (e.code === "Enter") {
                     e.preventDefault();
                 }
+            }}
+            onSubmit={(e) => {
+                e.preventDefault();
             }}
             className="bg-background/80 flex flex-col gap-y-[8px] justify-center border-1 border-muted-foreground p-[20px] rounded-[8px] w-full max-w-[600px] min-[901]:text-[20px] absolute top-1/2 left-1/2 -translate-1/2 h-[full]"
         >

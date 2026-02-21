@@ -1,5 +1,3 @@
-import { promises } from "dns";
-import { useAuthStore } from "../store/useAuthStore";
 import { BASE_API_URL, fetchWithRefreshTokenRetry, location } from "./api";
 
 export const createEvent = async (
