@@ -1,13 +1,12 @@
 "use client";
 import { useState } from "react";
-import { location } from "../utilities/api";
+import type { Location } from "../utilities/api";
 import { createEvent } from "../utilities/event";
-import { useRouter } from "next/navigation";
 
 type Props = {
     handleClose: () => void;
     handleClickSelectLocation: () => void;
-    selectedLocation: location;
+    selectedLocation: Location;
     selectedAddress: string;
 };
 

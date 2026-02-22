@@ -1,6 +1,7 @@
-import { fetchWithRefreshTokenRetry, location } from "./api";
+import type { Location } from "./api";
+import { fetchWithRefreshTokenRetry } from "./api";
 
-export type event = {
+export type EventItem = {
     ID: string;
     CreatedAt: string;
     StartsAt: string;
@@ -22,7 +23,7 @@ export const createEvent = async (
     endDate: string,
     endTime: string,
     address: string,
-    lnglat: location,
+    lnglat: Location,
 ): Promise<boolean> => {
     const [startHour, startMinute] = startTime.split(":").map(Number);
     const [endHour, endMinute] = endTime.split(":").map(Number);
@@ -70,7 +71,7 @@ export const createEvent = async (
     }
 };
 
-export const getEvents = async (): Promise<event[] | undefined> => {
+export const getEvents = async (): Promise<EventItem[] | undefined> => {
     try {
         const res = await fetchWithRefreshTokenRetry("events", {
             method: "GET",

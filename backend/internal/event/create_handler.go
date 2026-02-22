@@ -1,7 +1,6 @@
 package event
 
 import (
-	"log"
 	"net/http"
 	"time"
 
@@ -22,13 +21,12 @@ var createRequest struct {
 
 func (h *handler) create(ctx *gin.Context) {
 	userID := ctx.GetHeader(string(middleware.CtxUserKey))
-	log.Println("here: ", userID)
 	if err := ctx.ShouldBind(&createRequest); err != nil {
 		ctx.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err := h.service.newEvent(
+	e, err := h.service.newEvent(
 		userID, createRequest.StartsAt, createRequest.EndsAt, createRequest.Title,
 		createRequest.Description, createRequest.Latitude, createRequest.Longitude,
 		createRequest.Address,
@@ -38,5 +36,5 @@ func (h *handler) create(ctx *gin.Context) {
 		return
 	}
 
-	ctx.JSON(http.StatusCreated, gin.H{"message": "event created succesfully"})
+	ctx.JSON(http.StatusCreated, gin.H{"message": "event created succesfully", "event": e})
 }

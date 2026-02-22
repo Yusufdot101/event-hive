@@ -4,7 +4,7 @@ import (
 	"time"
 )
 
-func (svc *service) newEvent(CreatorID string, startsAt, endsAt time.Time, title, description string, latitude, longitude float64, address string) error {
+func (svc *service) newEvent(CreatorID string, startsAt, endsAt time.Time, title, description string, latitude, longitude float64, address string) (*event, error) {
 	e := &event{
 		CreatorID:   CreatorID,
 		StartsAt:    startsAt,
@@ -18,9 +18,9 @@ func (svc *service) newEvent(CreatorID string, startsAt, endsAt time.Time, title
 
 	err := validateEvent(e)
 	if err != nil {
-		return err
+		return nil, err
 	}
-	return svc.repo.insert(e)
+	return e, svc.repo.insert(e)
 }
 
 func (svc *service) getMany() ([]*event, error) {

@@ -2,6 +2,7 @@ package event
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -98,4 +99,101 @@ func TestGetEventsHandler(t *testing.T) {
 
 	assert.Equal(t, http.StatusOK, w.Code)
 	assert.Contains(t, w.Body.String(), "events")
+}
+
+func TestGetEvent(t *testing.T) {
+	gin.SetMode(gin.TestMode)
+
+	config.SetupVars()
+	DB, err := config.OpenDB(config.TestDSN)
+	if err != nil {
+		t.Fatalf("unexpected error opening DB: %v", err)
+	}
+
+	err = setup.ClearDB(DB)
+	if err != nil {
+		t.Fatalf("unexpected error clearing DB: %v", err)
+	}
+
+	userSvc := user.NewUserService(user.NewRepository(DB))
+	tokenSvc := token.NewTokenService(token.NewRepository(DB))
+	authHandler := auth.NewHandler(userSvc, tokenSvc)
+
+	// create user
+	body := `{
+		"name": "yusuf",
+		"email": "example@gmail.com",
+		"password": "12345678"
+	}
+	`
+	req := httptest.NewRequest(http.MethodPost, "/auth/signup", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+
+	w := httptest.NewRecorder()
+
+	c, _ := gin.CreateTestContext(w)
+	c.Request = req
+
+	authHandler.Signup(c)
+
+	assert.Equal(t, http.StatusCreated, w.Code)
+
+	var response struct {
+		Message     string `json:"message"`
+		AccessToken string `json:"accessToken"`
+	}
+
+	if err := json.Unmarshal(w.Body.Bytes(), &response); err != nil {
+		t.Fatalf("unexpected error unmarshalling response: %v", err)
+	}
+
+	if response.AccessToken == "" {
+		t.Fatal("expected accessToken to be in response")
+	}
+
+	// create event
+	router := gin.New()
+	group := router.Group("/")
+	RegisterRoutes(DB, group)
+
+	body = `{
+		"title": "test event",
+		"description": "test event description",
+		"startsAt": "2026-02-18T11:35:20.123Z",
+		"endsAt": "2026-03-18T11:35:20.123Z",
+		"address": "test address"
+	}`
+	req = httptest.NewRequest(http.MethodPost, "/events", strings.NewReader(body))
+	req.Header.Set("Content-Type", "application/json")
+	req.Header.Set("Authorization", "Bearer "+response.AccessToken)
+
+	w = httptest.NewRecorder()
+
+	router.ServeHTTP(w, req)
+
+	var createEventResponse struct {
+		Message string `json:"message"`
+		Event   *event `json:"event"`
+	}
+
+	if err := json.Unmarshal(w.Body.Bytes(), &createEventResponse); err != nil {
+		t.Fatalf("unexpected error unmarshalling response: %v", err)
+	}
+
+	if createEventResponse.Event == nil {
+		t.Fatal("expected event to be in response")
+	}
+
+	// get the events
+	h := newHandler(newService(newRepository(DB)))
+	req = httptest.NewRequest(http.MethodGet, fmt.Sprintf("/events/%s", createEventResponse.Event.ID), nil)
+	w = httptest.NewRecorder()
+
+	ctx, _ := gin.CreateTestContext(w)
+	ctx.Request = req
+
+	h.getEvents(ctx)
+
+	assert.Equal(t, http.StatusOK, w.Code)
+	assert.Contains(t, w.Body.String(), "event")
 }

@@ -8,15 +8,17 @@ type Props = {
     lat: number;
     children: React.ReactNode;
     style?: CSSProperties;
+    onClick?: () => void;
 };
 
-const CustomMarker = ({ lng, lat, children, style }: Props) => {
+const CustomMarker = ({ lng, lat, children, style, onClick }: Props) => {
     const { current: map } = useMap();
     if (!map) return;
     const { x, y } = map?.project([lng, lat]);
 
     return (
         <div
+            onClick={onClick}
             style={{
                 position: "absolute",
                 left: `${x}px`,

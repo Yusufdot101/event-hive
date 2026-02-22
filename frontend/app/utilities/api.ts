@@ -1,4 +1,3 @@
-import { LngLatLike } from "maplibre-gl";
 import { useAuthStore } from "../store/useAuthStore";
 import { refreshToken } from "./refreshToken";
 
@@ -22,18 +21,18 @@ export interface LocationResponse {
     query: string;
 }
 
-export type location = {
+export type Location = {
     lng: number;
     lat: number;
 };
-export const defaultLocation: location = { lng: 0, lat: 0 };
+export const defaultLocation: Location = { lng: 0, lat: 0 };
 
-export const getLocation = async (): Promise<LngLatLike> => {
+export const getUserLocation = async (): Promise<Location> => {
     try {
         const res = await fetch("http://ip-api.com/json/");
         const json = (await res.json()) as LocationResponse;
         if (typeof json.lat === "number" && typeof json.lon === "number") {
-            return [json.lon, json.lat];
+            return { lng: json.lon, lat: json.lat };
         }
     } catch (error) {
         console.log(error);
@@ -48,7 +47,7 @@ type locationInfo = {
 };
 
 export const getAddressFromLngLat = async (
-    location: location,
+    location: Location,
 ): Promise<locationInfo | null> => {
     try {
         const res = await fetch(
