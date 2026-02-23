@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
-import { EventItem, getAttendingStatus } from "../utilities/event";
+import {
+    changeAttendingStatus,
+    EventItem,
+    getAttendingStatus,
+} from "../utilities/event";
 
 type Props = {
     event: EventItem;
@@ -25,8 +29,12 @@ const Event = ({ event, handleClose }: Props) => {
     }, []);
 
     const handleClickAttend = async () => {
-        const attendingStatus = await getAttendingStatus(event.ID);
-        setIsAttendingEvent(attendingStatus);
+        const success = await changeAttendingStatus(
+            event.ID,
+            isAttendingEvent ? "unattend" : "attend",
+        );
+        if (!success) return;
+        setIsAttendingEvent((prev) => !prev);
     };
 
     return (
@@ -128,13 +136,13 @@ const Event = ({ event, handleClose }: Props) => {
             </div>
 
             <button
-                onClick={() => setIsAttendingEvent((prev) => !prev)}
-                className="bg-foreground text-background rounded-[4px] py-[4px] cursor-pointer hover:bg-muted hover:text-white duration-300"
+                onClick={handleClickAttend}
+                className="bg-foreground/70 text-background rounded-[4px] py-[4px] cursor-pointer hover:bg-muted hover:text-white duration-300"
                 aria-label={
                     isAttendingEvent ? "don't attend event" : "attend event"
                 }
             >
-                {isAttendingEvent ? "Attending" : "Attend"}
+                {isAttendingEvent ? "Attending Event" : "Attend Event"}
             </button>
         </div>
     );

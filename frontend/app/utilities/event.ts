@@ -103,3 +103,27 @@ export const getAttendingStatus = async (eventID: string): Promise<boolean> => {
         return false;
     }
 };
+export const changeAttendingStatus = async (
+    eventID: string,
+    action: "attend" | "unattend",
+): Promise<boolean> => {
+    try {
+        const res = await fetchWithRefreshTokenRetry(
+            `events/${eventID}/attend`,
+            {
+                method: action === "attend" ? "POST" : "DELETE",
+            },
+        );
+        if (!res || !res.ok) return false;
+        const data = await res.json();
+        const error = data.error;
+        if (error) {
+            alert(error);
+            return false;
+        }
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
