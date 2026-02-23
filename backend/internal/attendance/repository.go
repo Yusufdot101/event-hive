@@ -3,6 +3,7 @@ package attendance
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
 
 	"github.com/Yusufdot101/eventhive/internal/customerrors"
@@ -59,4 +60,28 @@ func (r *repository) delete(ea *eventAttendee) error {
 		return customerrors.ErrNoRecord
 	}
 	return nil
+}
+
+func (r *repository) get(ea *eventAttendee) (*eventAttendee, error) {
+	query := `
+		SELECT event_id, user_id FROM event_attendees
+		WHERE event_id = $1 
+			AND user_id = $2
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	err := r.DB.QueryRowContext(ctx, query, ea.eventID, ea.userID).Scan(
+		&ea.eventID,
+		&ea.userID,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, customerrors.ErrNoRecord
+		}
+		return nil, err
+	}
+
+	return ea, nil
 }

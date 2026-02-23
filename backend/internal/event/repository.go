@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/Yusufdot101/eventhive/internal/customerrors"
@@ -67,7 +68,11 @@ func (r *repository) getMany() ([]*event, error) {
 		return nil, err
 	}
 
-	defer rows.Close()
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Println("close rows error: ", err)
+		}
+	}()
 
 	for rows.Next() {
 		event := &event{}

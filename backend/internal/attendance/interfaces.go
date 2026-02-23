@@ -8,7 +8,6 @@ import (
 )
 
 type eventAttendee struct {
-	id        string
 	createdAt time.Time
 	eventID   string
 	userID    string
