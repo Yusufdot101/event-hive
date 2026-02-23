@@ -1,4 +1,5 @@
-import { EventItem } from "../utilities/event";
+import { useEffect, useState } from "react";
+import { EventItem, getAttendingStatus } from "../utilities/event";
 
 type Props = {
     event: EventItem;
@@ -13,6 +14,21 @@ const Event = ({ event, handleClose }: Props) => {
         hour: "2-digit",
         minute: "2-digit",
     };
+
+    const [isAttendingEvent, setIsAttendingEvent] = useState(false);
+
+    useEffect(() => {
+        (async () => {
+            const attendingStatus = await getAttendingStatus(event.ID);
+            setIsAttendingEvent(attendingStatus);
+        })();
+    }, []);
+
+    const handleClickAttend = async () => {
+        const attendingStatus = await getAttendingStatus(event.ID);
+        setIsAttendingEvent(attendingStatus);
+    };
+
     return (
         <div className="absolute left-1/2 top-[120px] -translate-x-1/2 bg-foreground/80 p-[8px] rounded-[4px] text-background w-[80vw] max-w-[800px] min-w-[360px] text-[20px] flex flex-col gap-y-[4px]">
             <div className="flex justify-between items-center text-[20px] bg-foreground/80 px-[12px] py-[4px] rounded-[4px]">
@@ -110,6 +126,16 @@ const Event = ({ event, handleClose }: Props) => {
                     <span aria-label="event location">{event.Address}</span>
                 </div>
             </div>
+
+            <button
+                onClick={() => setIsAttendingEvent((prev) => !prev)}
+                className="bg-foreground text-background rounded-[4px] py-[4px] cursor-pointer hover:bg-muted hover:text-white duration-300"
+                aria-label={
+                    isAttendingEvent ? "don't attend event" : "attend event"
+                }
+            >
+                {isAttendingEvent ? "Attending" : "Attend"}
+            </button>
         </div>
     );
 };

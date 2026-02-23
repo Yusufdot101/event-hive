@@ -85,3 +85,21 @@ export const getEvents = async (): Promise<EventItem[] | undefined> => {
         return undefined;
     }
 };
+
+export const getAttendingStatus = async (eventID: string): Promise<boolean> => {
+    try {
+        const res = await fetchWithRefreshTokenRetry(
+            `events/${eventID}/attend`,
+            {
+                method: "GET",
+            },
+        );
+        if (!res) return false;
+        const data = await res.json();
+        const attendingStatus = data.userIsAttending;
+        return attendingStatus;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
