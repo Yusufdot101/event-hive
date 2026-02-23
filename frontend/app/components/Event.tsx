@@ -26,7 +26,7 @@ const Event = ({ event, handleClose }: Props) => {
             const attendingStatus = await getAttendingStatus(event.ID);
             setIsAttendingEvent(attendingStatus);
         })();
-    }, []);
+    }, [event.ID]);
 
     const handleClickAttend = async () => {
         const success = await changeAttendingStatus(

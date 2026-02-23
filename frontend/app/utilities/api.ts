@@ -70,7 +70,7 @@ export const fetchWithRefreshTokenRetry = async (
     const accessToken = useAuthStore.getState().accessToken;
     const url = path.startsWith("http") ? path : BASE_API_URL + "/" + path;
     try {
-        let res = await fetch(url, {
+        const res = await fetch(url, {
             ...options,
             credentials: "include",
             headers: {
@@ -82,7 +82,7 @@ export const fetchWithRefreshTokenRetry = async (
         if (res.status === 401) {
             await refreshToken();
             const newAccessToken = useAuthStore().accessToken;
-            let res = await fetch(url, {
+            const res = await fetch(url, {
                 ...options,
                 credentials: "include",
                 headers: {
