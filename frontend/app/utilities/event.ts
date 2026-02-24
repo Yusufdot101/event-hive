@@ -15,6 +15,14 @@ export type EventItem = {
     Address: string;
 };
 
+export type UserItem = {
+    ID: string;
+    CreatedAt: string;
+    LastUpdatedAt: string;
+    Name: string;
+    Email: string;
+};
+
 export const createEvent = async (
     title: string,
     description: string,
@@ -103,6 +111,7 @@ export const getAttendingStatus = async (eventID: string): Promise<boolean> => {
         return false;
     }
 };
+
 export const changeAttendingStatus = async (
     eventID: string,
     action: "attend" | "unattend",
@@ -125,5 +134,30 @@ export const changeAttendingStatus = async (
     } catch (error) {
         console.log(error);
         return false;
+    }
+};
+
+export const getEventAttendees = async (
+    eventID: string,
+): Promise<UserItem[] | undefined> => {
+    try {
+        const res = await fetchWithRefreshTokenRetry(
+            `events/${eventID}/attendees`,
+            { method: "GET" },
+        );
+        if (!res) return;
+
+        const data = await res?.json();
+        const error = data.error;
+        if (error) {
+            alert(error);
+            return;
+        }
+
+        const users = data.users;
+        return users;
+    } catch (error) {
+        console.log(error);
+        return;
     }
 };

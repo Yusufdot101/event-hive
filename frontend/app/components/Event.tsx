@@ -3,6 +3,8 @@ import {
     changeAttendingStatus,
     EventItem,
     getAttendingStatus,
+    getEventAttendees,
+    UserItem,
 } from "../utilities/event";
 
 type Props = {
@@ -20,11 +22,15 @@ const Event = ({ event, handleClose }: Props) => {
     };
 
     const [isAttendingEvent, setIsAttendingEvent] = useState(false);
+    const [eventAttendees, setEventAttendees] = useState<UserItem[]>();
 
     useEffect(() => {
         (async () => {
             const attendingStatus = await getAttendingStatus(event.ID);
             setIsAttendingEvent(attendingStatus);
+            const eventAttendees = await getEventAttendees(event.ID);
+            if (!eventAttendees) return;
+            setEventAttendees(eventAttendees);
         })();
     }, [event.ID]);
 
