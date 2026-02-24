@@ -8,38 +8,38 @@ import (
 )
 
 type eventAttendee struct {
-	createdAt time.Time
-	eventID   string
-	userID    string
+	CreatedAt time.Time
+	EventID   string
+	UserID    string
 }
 
-type service struct {
+type Service struct {
 	repo *repository
 }
 
-func NewService(repo *repository) *service {
-	return &service{
+func NewService(repo *repository) *Service {
+	return &Service{
 		repo: repo,
 	}
 }
 
 type handler struct {
-	svc *service
+	svc *Service
 }
 
-func NewHandler(svc *service) *handler {
+func NewHandler(svc *Service) *handler {
 	return &handler{
 		svc: svc,
 	}
 }
 
 func validateAttendee(ea *eventAttendee) error {
-	err := uuid.Validate(ea.eventID)
+	err := uuid.Validate(ea.EventID)
 	if err != nil {
 		return customerrors.ErrInvalidID
 	}
 
-	err = uuid.Validate(ea.userID)
+	err = uuid.Validate(ea.UserID)
 	if err != nil {
 		return customerrors.ErrInvalidID
 	}

@@ -17,8 +17,8 @@ func NewUserService(repo *repository) *UserService {
 
 func (us *UserService) RegisterUser(name, email, passwordPlaintext string) (*user, error) {
 	u := &user{
-		name:  name,
-		email: email,
+		Name:  name,
+		Email: email,
 	}
 
 	v := validator.New(validator.WithRequiredStructEnabled())
@@ -54,4 +54,8 @@ func (us *UserService) GetUserByEmailAndPassword(email, password string) (*user,
 	}
 
 	return u, nil
+}
+
+func (us *UserService) GetUsersByIDs(userIDs []string) ([]*user, error) {
+	return us.Repo.getManyByIDs(userIDs)
 }

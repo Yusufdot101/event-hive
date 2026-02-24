@@ -14,10 +14,10 @@ var errInvalidPassword = errors.New("invalid password")
 
 type user struct {
 	ID            string
-	createdAt     time.Time
-	lastUpdatedAt *time.Time
-	name          string   `validate:"gte=2"`
-	email         string   `validate:"email"`
+	CreatedAt     time.Time
+	LastUpdatedAt *time.Time
+	Name          string   `validate:"gte=2"`
+	Email         string   `validate:"email"`
 	password      password `json:"-"`
 }
 

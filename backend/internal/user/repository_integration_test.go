@@ -11,8 +11,8 @@ import (
 func TestInsert(t *testing.T) {
 	u := &user{
 		ID:    "bb1ca442-5594-4106-aba1-34a40d89b9dc",
-		name:  "yusuf",
-		email: "example@gmail.com",
+		Name:  "yusuf",
+		Email: "example@gmail.com",
 	}
 	_ = u.password.set("12345678")
 
@@ -39,8 +39,8 @@ func TestGetByEmail(t *testing.T) {
 	// instert user
 	u := &user{
 		ID:    "bb1ca442-5594-4106-aba1-34a40d89b9dc",
-		name:  "yusuf",
-		email: "example@gmail.com",
+		Name:  "yusuf",
+		Email: "example@gmail.com",
 	}
 	passwordPlaintext := "12345678"
 	_ = u.password.set(passwordPlaintext)
@@ -64,20 +64,20 @@ func TestGetByEmail(t *testing.T) {
 	}
 
 	// fetch user
-	gotUser, err := repo.getByEmail(u.email)
+	gotUser, err := repo.getByEmail(u.Email)
 	if err != nil {
 		t.Fatalf("unexpected error fetching user: %v", err)
 	}
 
 	// assert the values
-	if gotUser.name != u.name {
-		t.Errorf("expected gotUser.name=%s, got gotUser.name=%s", u.name, gotUser.name)
+	if gotUser.Name != u.Name {
+		t.Errorf("expected gotUser.name=%s, got gotUser.name=%s", u.Name, gotUser.Name)
 	}
-	if gotUser.email != u.email {
-		t.Errorf("expected gotUser.name=%s, got gotUser.name=%s", u.name, gotUser.name)
+	if gotUser.Email != u.Email {
+		t.Errorf("expected gotUser.name=%s, got gotUser.name=%s", u.Name, gotUser.Name)
 	}
 	matches, err := gotUser.password.matches(passwordPlaintext)
-	if gotUser.email != u.email {
+	if gotUser.Email != u.Email {
 		t.Fatalf("unexpected error matching password: %v", err)
 	}
 	if !matches {

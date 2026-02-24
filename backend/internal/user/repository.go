@@ -4,10 +4,11 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"log"
 	"time"
 
 	"github.com/Yusufdot101/eventhive/internal/customerrors"
-	_ "github.com/lib/pq"
+	"github.com/lib/pq"
 )
 
 type repository struct {
@@ -28,8 +29,8 @@ func (r *repository) insert(u *user) error {
 	`
 
 	values := []any{
-		u.name,
-		u.email,
+		u.Name,
+		u.Email,
 		u.password.hash,
 	}
 
@@ -61,10 +62,10 @@ func (r *repository) getByEmail(email string) (*user, error) {
 	u := &user{}
 	err := r.DB.QueryRowContext(ctx, query, email).Scan(
 		&u.ID,
-		&u.createdAt,
-		&u.lastUpdatedAt,
-		&u.name,
-		&u.email,
+		&u.CreatedAt,
+		&u.LastUpdatedAt,
+		&u.Name,
+		&u.Email,
 		&u.password.hash,
 	)
 	if err != nil {
@@ -75,4 +76,43 @@ func (r *repository) getByEmail(email string) (*user, error) {
 	}
 
 	return u, nil
+}
+
+func (r *repository) getManyByIDs(userIDs []string) ([]*user, error) {
+	query := `
+		SELECT id, created_at, last_updated_at, name, email FROM users
+		WHERE id = ANY($1)
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	rows, err := r.DB.QueryContext(ctx, query, pq.Array(userIDs))
+	if err != nil {
+		return nil, err
+	}
+
+	defer func() {
+		if err := rows.Close(); err != nil {
+			log.Println("close rows error: ", err)
+		}
+	}()
+
+	users := []*user{}
+	for rows.Next() {
+		u := &user{}
+		err = rows.Scan(
+			&u.ID,
+			&u.CreatedAt,
+			&u.LastUpdatedAt,
+			&u.Name,
+			&u.Email,
+		)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, u)
+	}
+
+	return users, nil
 }

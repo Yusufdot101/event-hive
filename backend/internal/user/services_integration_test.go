@@ -35,8 +35,8 @@ func TestRegisterUser(t *testing.T) {
 		log.Fatalf("unexpected error registering user: %v", err)
 	}
 
-	assert.Equal(t, u.name, name)
-	assert.Equal(t, u.email, email)
+	assert.Equal(t, u.Name, name)
+	assert.Equal(t, u.Email, email)
 	matches, err := u.password.matches(passwordPlaintext)
 	if err != nil {
 		log.Fatalf("unexpected error matching password: %v", err)

@@ -88,7 +88,7 @@ func TestGetEventsHandler(t *testing.T) {
 	router.ServeHTTP(w, req)
 
 	// get the events
-	h := newHandler(newService(newRepository(DB)))
+	h := newHandler(newService(newRepository(DB)), nil, nil)
 	req = httptest.NewRequest(http.MethodGet, "/events", nil)
 	w = httptest.NewRecorder()
 
@@ -185,7 +185,7 @@ func TestGetEvent(t *testing.T) {
 	}
 
 	// get the events
-	h := newHandler(newService(newRepository(DB)))
+	h := newHandler(newService(newRepository(DB)), nil, nil)
 	req = httptest.NewRequest(http.MethodGet, fmt.Sprintf("/events/%s", createEventResponse.Event.ID), nil)
 	w = httptest.NewRecorder()
 

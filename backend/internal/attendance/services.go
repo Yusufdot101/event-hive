@@ -6,10 +6,10 @@ import (
 	"github.com/Yusufdot101/eventhive/internal/customerrors"
 )
 
-func (svc *service) NewAttendance(eventID, userID string) error {
+func (svc *Service) NewAttendance(eventID, userID string) error {
 	ea := &eventAttendee{
-		eventID: eventID,
-		userID:  userID,
+		EventID: eventID,
+		UserID:  userID,
 	}
 
 	err := validateAttendee(ea)
@@ -19,10 +19,10 @@ func (svc *service) NewAttendance(eventID, userID string) error {
 	return svc.repo.insert(ea)
 }
 
-func (svc *service) RemoveAttendance(eventID, userID string) error {
+func (svc *Service) RemoveAttendance(eventID, userID string) error {
 	ea := &eventAttendee{
-		eventID: eventID,
-		userID:  userID,
+		EventID: eventID,
+		UserID:  userID,
 	}
 
 	err := validateAttendee(ea)
@@ -32,10 +32,10 @@ func (svc *service) RemoveAttendance(eventID, userID string) error {
 	return svc.repo.delete(ea)
 }
 
-func (svc *service) UserIsAttendingEvent(eventID, userID string) (bool, error) {
+func (svc *Service) UserIsAttendingEvent(eventID, userID string) (bool, error) {
 	ea := &eventAttendee{
-		eventID: eventID,
-		userID:  userID,
+		EventID: eventID,
+		UserID:  userID,
 	}
 
 	err := validateAttendee(ea)
@@ -52,4 +52,8 @@ func (svc *service) UserIsAttendingEvent(eventID, userID string) (bool, error) {
 	}
 
 	return true, nil
+}
+
+func (svc *Service) GetEventAttendees(eventID string) ([]*eventAttendee, error) {
+	return svc.repo.getManyByEventID(eventID)
 }

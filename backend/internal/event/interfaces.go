@@ -3,7 +3,9 @@ package event
 import (
 	"time"
 
+	"github.com/Yusufdot101/eventhive/internal/attendance"
 	"github.com/Yusufdot101/eventhive/internal/customerrors"
+	"github.com/Yusufdot101/eventhive/internal/user"
 )
 
 type event struct {
@@ -31,12 +33,16 @@ func newService(repo *repository) *service {
 }
 
 type handler struct {
-	service *service
+	service           *service
+	userService       *user.UserService
+	attendanceService *attendance.Service
 }
 
-func newHandler(service *service) *handler {
+func newHandler(service *service, userSvc *user.UserService, attendanceSvc *attendance.Service) *handler {
 	return &handler{
-		service: service,
+		service:           service,
+		userService:       userSvc,
+		attendanceService: attendanceSvc,
 	}
 }
 

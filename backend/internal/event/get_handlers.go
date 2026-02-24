@@ -44,3 +44,32 @@ func (h *handler) getEvent(ctx *gin.Context) {
 		"event": e,
 	})
 }
+
+func (h *handler) GetEventAttendees(ctx *gin.Context) {
+	eventID := ctx.Params.ByName("id")
+	if eventID == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": customerrors.ErrInvalidID.Error()})
+		return
+	}
+
+	eventAttendees, err := h.attendanceService.GetEventAttendees(eventID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	userIDs := []string{}
+	for _, attendee := range eventAttendees {
+		userIDs = append(userIDs, attendee.UserID)
+	}
+
+	users, err := h.userService.GetUsersByIDs(userIDs)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"users": users,
+	})
+}
