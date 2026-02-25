@@ -59,3 +59,7 @@ func (us *UserService) GetUserByEmailAndPassword(email, password string) (*user,
 func (us *UserService) GetUsersByIDs(userIDs []string) ([]*user, error) {
 	return us.Repo.getManyByIDs(userIDs)
 }
+
+func (us *UserService) GetUserByID(userID string) (*user, error) {
+	return us.Repo.getByID(userID)
+}

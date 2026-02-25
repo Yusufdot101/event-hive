@@ -73,3 +73,27 @@ func (h *handler) GetEventAttendees(ctx *gin.Context) {
 		"users": users,
 	})
 }
+
+func (h *handler) GetEventCreator(ctx *gin.Context) {
+	eventID := ctx.Params.ByName("id")
+	if eventID == "" {
+		ctx.JSON(http.StatusBadRequest, gin.H{"error": customerrors.ErrInvalidID.Error()})
+		return
+	}
+
+	event, err := h.service.getByID(eventID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	user, err := h.userService.GetUserByID(event.CreatorID)
+	if err != nil {
+		ctx.JSON(http.StatusInternalServerError, gin.H{"error": err.Error()})
+		return
+	}
+
+	ctx.JSON(http.StatusOK, gin.H{
+		"user": user,
+	})
+}

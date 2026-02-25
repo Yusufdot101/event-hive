@@ -32,4 +32,6 @@ func RegisterRoutes(DB *sql.DB, ctx *gin.RouterGroup) {
 	ctx.Match([]string{http.MethodGet}, "/events/:id/attend", middleware.Authenticate(attendenceHandler.GetAttendingStatus))
 
 	ctx.Match([]string{http.MethodGet}, "/events/:id/attendees", h.GetEventAttendees)
+
+	ctx.Match([]string{http.MethodGet}, "/events/:id/creator", h.GetEventCreator)
 }

@@ -116,3 +116,30 @@ func (r *repository) getManyByIDs(userIDs []string) ([]*user, error) {
 
 	return users, nil
 }
+
+func (r *repository) getByID(userID string) (*user, error) {
+	query := `
+		SELECT id, created_at, last_updated_at, name, email FROM users
+		WHERE id = $1
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	u := &user{}
+	err := r.DB.QueryRowContext(ctx, query, userID).Scan(
+		&u.ID,
+		&u.CreatedAt,
+		&u.LastUpdatedAt,
+		&u.Name,
+		&u.Email,
+	)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			return nil, customerrors.ErrNoRecord
+		}
+		return nil, err
+	}
+
+	return u, nil
+}
