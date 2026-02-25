@@ -4,6 +4,7 @@ import {
     EventItem,
     getAttendingStatus,
     getEventAttendees,
+    getEventCreator,
     UserItem,
 } from "../utilities/event";
 
@@ -23,6 +24,7 @@ const Event = ({ event, handleClose }: Props) => {
 
     const [isAttendingEvent, setIsAttendingEvent] = useState(false);
     const [eventAttendees, setEventAttendees] = useState<UserItem[]>();
+    const [eventCreator, setEventCreator] = useState<UserItem>();
 
     useEffect(() => {
         (async () => {
@@ -31,6 +33,10 @@ const Event = ({ event, handleClose }: Props) => {
             const eventAttendees = await getEventAttendees(event.ID);
             if (!eventAttendees) return;
             setEventAttendees(eventAttendees);
+
+            const eventCreator = await getEventCreator(event.ID);
+            if (!eventCreator) return;
+            setEventCreator(eventCreator);
         })();
     }, [event.ID, isAttendingEvent]);
 
@@ -141,17 +147,26 @@ const Event = ({ event, handleClose }: Props) => {
                 </div>
             </div>
 
-            <div className="flex items-center gap-x-[4px] bg-foreground/70 px-[12px] py-[4px] rounded-[4px]">
-                <span>Attending:</span>{" "}
-                <div className="flex gap-x-[4px] overflow-x-auto">
-                    {eventAttendees?.map((attendee) => (
-                        <span
-                            className="bg-background text-foreground text-center rounded-[4px] px-[4px]"
-                            key={attendee.ID}
-                        >
-                            {attendee.Name}
-                        </span>
-                    ))}
+            <div className="flex flex-col gap-y-[4px] bg-foreground/70 px-[12px] py-[4px] rounded-[4px]">
+                <div className="flex gap-x-[4px]">
+                    <span>Created by: </span>
+                    <span className="bg-accent text-foreground text-center rounded-[4px] px-[4px]">
+                        {eventCreator?.Name}
+                    </span>
+                </div>
+
+                <div className="flex items-center gap-x-[4px]">
+                    <span>Attending:</span>{" "}
+                    <div className="flex gap-x-[4px] overflow-x-auto">
+                        {eventAttendees?.map((attendee) => (
+                            <span
+                                className="bg-background text-foreground text-center rounded-[4px] px-[4px]"
+                                key={attendee.ID}
+                            >
+                                {attendee.Name}
+                            </span>
+                        ))}
+                    </div>
                 </div>
             </div>
 

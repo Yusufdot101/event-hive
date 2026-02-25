@@ -161,3 +161,28 @@ export const getEventAttendees = async (
         return;
     }
 };
+
+export const getEventCreator = async (
+    eventID: string,
+): Promise<UserItem | undefined> => {
+    try {
+        const res = await fetchWithRefreshTokenRetry(
+            `events/${eventID}/creator`,
+            { method: "GET" },
+        );
+        if (!res) return;
+
+        const data = await res?.json();
+        const error = data.error;
+        if (error) {
+            alert(error);
+            return;
+        }
+
+        const user = data.user;
+        return user;
+    } catch (error) {
+        console.log(error);
+        return;
+    }
+};
