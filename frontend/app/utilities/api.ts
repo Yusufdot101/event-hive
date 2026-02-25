@@ -81,7 +81,7 @@ export const fetchWithRefreshTokenRetry = async (
 
         if (res.status === 401) {
             await refreshToken();
-            const newAccessToken = useAuthStore().accessToken;
+            const newAccessToken = useAuthStore.getState().accessToken;
             const res = await fetch(url, {
                 ...options,
                 credentials: "include",

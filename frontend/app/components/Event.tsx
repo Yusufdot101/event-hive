@@ -32,7 +32,7 @@ const Event = ({ event, handleClose }: Props) => {
             if (!eventAttendees) return;
             setEventAttendees(eventAttendees);
         })();
-    }, [event.ID]);
+    }, [event.ID, isAttendingEvent]);
 
     const handleClickAttend = async () => {
         const success = await changeAttendingStatus(
@@ -138,6 +138,20 @@ const Event = ({ event, handleClose }: Props) => {
                         </g>
                     </svg>
                     <span aria-label="event location">{event.Address}</span>
+                </div>
+            </div>
+
+            <div className="flex items-center gap-x-[4px] bg-foreground/70 px-[12px] py-[4px] rounded-[4px]">
+                <span>Attending:</span>{" "}
+                <div className="flex gap-x-[4px] overflow-x-auto">
+                    {eventAttendees?.map((attendee) => (
+                        <span
+                            className="bg-background text-foreground text-center rounded-[4px] px-[4px]"
+                            key={attendee.ID}
+                        >
+                            {attendee.Name}
+                        </span>
+                    ))}
                 </div>
             </div>
 
