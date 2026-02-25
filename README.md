@@ -1,4 +1,6 @@
 # EventHive
+![Preview](eventhive_map.png)
+![Preview](eventhive_signup.png)
 
 EventHive is a full-stack web application that allows users to create, discover, and attend events. It integrates authentication, and interactive maps using MapLibre to provide a seamless event exploration experience.
 
