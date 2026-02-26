@@ -6,6 +6,8 @@ type AuthState = {
     setAcessToken: (accessToken: string) => void;
     setIsLoggedIn: (isLoggedIn: boolean) => void;
     clearAccessToken: () => void;
+    userID: string | undefined;
+    setUserID: (id: string) => void;
 };
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -13,5 +15,8 @@ export const useAuthStore = create<AuthState>((set) => ({
     isLoggedIn: false,
     setAcessToken: (accessToken: string) => set({ accessToken: accessToken }),
     setIsLoggedIn: (isLoggedIn: boolean) => set({ isLoggedIn: isLoggedIn }),
-    clearAccessToken: () => set({ accessToken: null, isLoggedIn: false }),
+    clearAccessToken: () =>
+        set({ accessToken: null, isLoggedIn: false, userID: undefined }),
+    userID: undefined,
+    setUserID: (id: string) => set({ userID: id }),
 }));
