@@ -30,3 +30,7 @@ func (svc *service) getMany() ([]*event, error) {
 func (svc *service) getByID(ID string) (*event, error) {
 	return svc.repo.getByID(ID)
 }
+
+func (svc *service) deleteEvent(eventID, creatorID string) error {
+	return svc.repo.deleteByEventIDAndCreatorID(eventID, creatorID)
+}

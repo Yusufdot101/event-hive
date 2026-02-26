@@ -142,3 +142,29 @@ func (r *repository) getByID(ID string) (*event, error) {
 
 	return e, nil
 }
+
+func (r *repository) deleteByEventIDAndCreatorID(eventID, creatorID string) error {
+	query := `
+		DELETE FROM events
+		WHERE id = $1 
+			AND creator_id = $2
+	`
+
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+
+	res, err := r.DB.ExecContext(ctx, query, eventID, creatorID)
+	if err != nil {
+		return err
+	}
+
+	rowsAffected, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if rowsAffected == 0 {
+		return customerrors.ErrNoRecord
+	}
+	return nil
+}
