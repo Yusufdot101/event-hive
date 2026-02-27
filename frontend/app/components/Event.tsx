@@ -1,12 +1,15 @@
 import { useEffect, useState } from "react";
 import {
     changeAttendingStatus,
+    deleteEvent,
     EventItem,
     getAttendingStatus,
     getEventAttendees,
     getEventCreator,
     UserItem,
 } from "../utilities/event";
+import { useAuthStore } from "../store/useAuthStore";
+import { useRouter } from "next/navigation";
 
 type Props = {
     event: EventItem;
@@ -25,8 +28,10 @@ const Event = ({ event, handleClose }: Props) => {
     const [isAttendingEvent, setIsAttendingEvent] = useState(false);
     const [eventAttendees, setEventAttendees] = useState<UserItem[]>();
     const [eventCreator, setEventCreator] = useState<UserItem>();
+    const userID = useAuthStore((state) => state.userID);
 
     useEffect(() => {
+        console.log("here", userID);
         (async () => {
             const attendingStatus = await getAttendingStatus(event.ID);
             setIsAttendingEvent(attendingStatus);
@@ -49,19 +54,51 @@ const Event = ({ event, handleClose }: Props) => {
         setIsAttendingEvent((prev) => !prev);
     };
 
+    const handleDelete = async () => {
+        const success = await deleteEvent(event.ID);
+        if (!success) return;
+        window.location.replace("/");
+    };
+
     return (
         <div className="absolute left-1/2 top-[120px] -translate-x-1/2 bg-foreground/80 p-[8px] rounded-[4px] text-background w-[80vw] max-w-[800px] min-w-[360px] text-[20px] flex flex-col gap-y-[4px]">
             <div className="flex justify-between items-center text-[20px] bg-foreground/80 px-[12px] py-[4px] rounded-[4px]">
                 <span className="font-bold" aria-label="event title">
                     {event.Title}
                 </span>
-                <button
-                    onClick={handleClose}
-                    className="hover:text-accent duration-300 cursor-pointer"
-                    aria-label="close event"
-                >
-                    x
-                </button>
+                <div className="flex items-center gap-x-[12px]">
+                    {event.CreatorID === userID ? (
+                        <svg
+                            viewBox="0 0 1024 1024"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="currentColor"
+                            className="cursor-pointer hover:text-red-500 h-[20px]"
+                            aria-label="delete event"
+                            aria-hidden={event.CreatorID !== userID}
+                            onClick={handleDelete}
+                        >
+                            <g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
+                            <g
+                                id="SVGRepo_tracerCarrier"
+                                strokeLinecap="round"
+                                strokeLinejoin="round"
+                            ></g>
+                            <g id="SVGRepo_iconCarrier">
+                                <path
+                                    fill="currentColor"
+                                    d="M160 256H96a32 32 0 0 1 0-64h256V95.936a32 32 0 0 1 32-32h256a32 32 0 0 1 32 32V192h256a32 32 0 1 1 0 64h-64v672a32 32 0 0 1-32 32H192a32 32 0 0 1-32-32V256zm448-64v-64H416v64h192zM224 896h576V256H224v640zm192-128a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32zm192 0a32 32 0 0 1-32-32V416a32 32 0 0 1 64 0v320a32 32 0 0 1-32 32z"
+                                ></path>
+                            </g>
+                        </svg>
+                    ) : undefined}
+                    <button
+                        onClick={handleClose}
+                        className="hover:text-accent duration-300 cursor-pointer"
+                        aria-label="close event"
+                    >
+                        x
+                    </button>
+                </div>
             </div>
 
             <div className="flex flex-col gap-y-[4px] bg-foreground/70 px-[12px] py-[4px] rounded-[4px]">
