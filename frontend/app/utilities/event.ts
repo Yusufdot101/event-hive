@@ -186,3 +186,24 @@ export const getEventCreator = async (
         return;
     }
 };
+
+export const deleteEvent = async (eventID: string): Promise<boolean> => {
+    try {
+        const res = await fetchWithRefreshTokenRetry(`events/${eventID}`, {
+            method: "DELETE",
+        });
+        if (!res) return false;
+
+        const data = await res?.json();
+        const error = data.error;
+        if (error) {
+            alert(error);
+            return false;
+        }
+
+        return true;
+    } catch (error) {
+        console.log(error);
+        return false;
+    }
+};
